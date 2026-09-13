@@ -37,6 +37,7 @@ app.get("/api/health", (req, res) => {
 
 // Mount Routes
 app.use("/api/auth", require("./routes/authRoutes"));
+app.use("/api", require("./routes/authRoutes")); // Convenience aliases: /api/login, /api/register
 app.use("/api/events", require("./routes/eventRoutes"));
 app.use("/api/registrations", require("./routes/registrationRoutes"));
 app.use("/api/attendance", require("./routes/attendanceRoutes"));
@@ -48,12 +49,24 @@ app.use("/api/notifications", require("./routes/notificationRoutes"));
 app.use("/api/settings", require("./routes/settingsRoutes"));
 app.use("/api/stats", require("./routes/statsRoutes"));
 
-// Catch 404 for unhandled API routes
-app.use((req, res, next) => {
+// Serve Frontend Static Assets
+const frontendDist = path.join(__dirname, "../frontend/dist");
+app.use(express.static(frontendDist));
+
+// Catch 404 for unhandled API routes only
+app.use("/api", (req, res) => {
   res.status(404).json({
     success: false,
     message: `API Route not found: ${req.method} ${req.originalUrl}`
   });
+});
+
+// SPA fallback for all frontend pages (e.g. /login, /register, /events, /student/*, /admin/*)
+app.use((req, res, next) => {
+  if (req.method === "GET") {
+    return res.sendFile("index.html", { root: frontendDist });
+  }
+  next();
 });
 
 // Centralized Error Handler
