@@ -42,8 +42,14 @@ export default function LandingPage() {
 
   const handleDemoLogin = async (email, password) => {
     try {
-      await login(email, password);
-      window.location.href = "/student/dashboard";
+      const u = await login(email, password);
+      if (u?.role === "admin") {
+        window.location.href = "/admin/dashboard";
+      } else if (u?.role === "teacher") {
+        window.location.href = "/teacher/dashboard";
+      } else {
+        window.location.href = "/student/dashboard";
+      }
     } catch (err) {
       alert(err.message || "Demo login failed.");
     }
