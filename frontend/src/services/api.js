@@ -1,7 +1,19 @@
 import axios from "axios";
 
+// Determine API base URL:
+// 1. If VITE_API_URL is set in environment (e.g. Vercel environment variables), use it.
+// 2. In local development or unified full-stack server, default to "/api".
+const getBaseURL = () => {
+  const envUrl = import.meta.env.VITE_API_URL;
+  if (envUrl && envUrl.trim()) {
+    const trimmed = envUrl.trim().replace(/\/$/, "");
+    return trimmed.endsWith("/api") ? trimmed : `${trimmed}/api`;
+  }
+  return "/api";
+};
+
 const api = axios.create({
-  baseURL: "/api",
+  baseURL: getBaseURL(),
   headers: {
     "Content-Type": "application/json"
   }

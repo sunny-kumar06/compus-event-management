@@ -74,9 +74,13 @@ app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, "0.0.0.0", () => {
-  console.log(`====================================================`);
-  console.log(`  JOY University — Campus Event Hub Server`);
-  console.log(`  Running on http://localhost:${PORT}`);
-  console.log(`====================================================`);
-});
+if (require.main === module) {
+  app.listen(PORT, "0.0.0.0", () => {
+    console.log(`====================================================`);
+    console.log(`  JOY University — Campus Event Hub Server`);
+    console.log(`  Running on http://localhost:${PORT}`);
+    console.log(`====================================================`);
+  });
+}
+
+module.exports = app;
