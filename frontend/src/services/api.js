@@ -47,6 +47,54 @@ function getMockFallback(config) {
   const url = (config?.url || "").replace(/^\/api/, "");
   const method = (config?.method || "get").toLowerCase();
 
+  // Authentication fallbacks
+  if (url.startsWith("/auth/login")) {
+    let reqEmail = "";
+    try {
+      const parsed = typeof config.data === "string" ? JSON.parse(config.data) : config.data;
+      reqEmail = (parsed?.email || "").trim().toLowerCase();
+    } catch {}
+    const matchedUser = mockUsers[reqEmail] || mockUsers["sunny@joy.edu"];
+    return {
+      success: true,
+      token: "joy_demo_token_" + Date.now(),
+      user: matchedUser
+    };
+  }
+
+  if (url.startsWith("/auth/me")) {
+    let currentUser = mockUsers["sunny@joy.edu"];
+    try {
+      const savedUserStr = localStorage.getItem("joy_hub_user");
+      if (savedUserStr) currentUser = JSON.parse(savedUserStr);
+    } catch {}
+    return {
+      success: true,
+      user: currentUser
+    };
+  }
+
+  if (url.startsWith("/auth/register")) {
+    let body = {};
+    try { body = typeof config.data === "string" ? JSON.parse(config.data) : config.data; } catch {}
+    const newUser = {
+      _id: "demo_student_" + Date.now(),
+      name: body.name || "New JOY Student",
+      email: body.email,
+      role: "student",
+      phone: body.phone || "+91 98765 00000",
+      rollNumber: "JOY-2023-NEW-01",
+      department: body.department || "Computer Science & Engineering",
+      academicYear: "1st_year",
+      semester: 1
+    };
+    return {
+      success: true,
+      token: "joy_demo_token_" + Date.now(),
+      user: newUser
+    };
+  }
+
   // Teacher assigned events (must be checked before /events/:id)
   if (url.startsWith("/events/teacher/assigned")) {
     return {
