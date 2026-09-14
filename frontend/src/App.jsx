@@ -43,6 +43,53 @@ import AdminTeachers from "./pages/admin/AdminTeachers";
 import AdminCertificates from "./pages/admin/AdminCertificates";
 import AdminSettings from "./pages/admin/AdminSettings";
 
+// Global Error Boundary to catch any runtime crashes and prevent white screens
+class ErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+
+  static getDerivedStateFromError(error) {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error, errorInfo) {
+    console.error("ErrorBoundary caught:", error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
+          <div className="max-w-md w-full bg-white p-8 rounded-3xl border border-slate-200 shadow-xl text-center space-y-4">
+            <div className="w-12 h-12 rounded-2xl bg-blue-50 border border-blue-200 text-blue-900 flex items-center justify-center mx-auto text-2xl font-bold">
+              🎓
+            </div>
+            <h2 className="text-lg font-bold text-slate-900">JOY Campus Hub Updated</h2>
+            <p className="text-xs text-slate-500">
+              New application assets have been deployed. Click below to load the latest version.
+            </p>
+            <button
+              onClick={() => {
+                try {
+                  localStorage.removeItem("joy_hub_token");
+                  localStorage.removeItem("joy_hub_user");
+                } catch {}
+                window.location.reload();
+              }}
+              className="w-full py-2.5 bg-blue-900 hover:bg-blue-800 text-white font-bold text-xs rounded-xl shadow transition-all"
+            >
+              Reload & Clear Cache
+            </button>
+          </div>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
 // Role-based Protected Route wrapper
 function ProtectedRoute({ children, allowedRoles = [] }) {
   const { user, loading } = useAuth();
@@ -101,9 +148,10 @@ function PublicLayout({ children }) {
 
 export default function App() {
   return (
-    <AuthProvider>
-      <InstitutionProvider>
-        <NotificationProvider>
+    <ErrorBoundary>
+      <AuthProvider>
+        <InstitutionProvider>
+          <NotificationProvider>
           <BrowserRouter>
             <Routes>
               {/* Public Routes */}
@@ -368,5 +416,6 @@ export default function App() {
         </NotificationProvider>
       </InstitutionProvider>
     </AuthProvider>
+    </ErrorBoundary>
   );
 }
