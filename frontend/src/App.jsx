@@ -66,22 +66,33 @@ class ErrorBoundary extends React.Component {
             <div className="w-12 h-12 rounded-2xl bg-blue-50 border border-blue-200 text-blue-900 flex items-center justify-center mx-auto text-2xl font-bold">
               🎓
             </div>
-            <h2 className="text-lg font-bold text-slate-900">JOY Campus Hub Updated</h2>
+            <h2 className="text-lg font-bold text-slate-900">Application Notice</h2>
             <p className="text-xs text-slate-500">
-              New application assets have been deployed. Click below to load the latest version.
+              {this.state.error?.message || "An unexpected error occurred while rendering this page."}
             </p>
-            <button
-              onClick={() => {
-                try {
-                  localStorage.removeItem("joy_hub_token");
-                  localStorage.removeItem("joy_hub_user");
-                } catch {}
-                window.location.reload();
-              }}
-              className="w-full py-2.5 bg-blue-900 hover:bg-blue-800 text-white font-bold text-xs rounded-xl shadow transition-all"
-            >
-              Reload & Clear Cache
-            </button>
+            <div className="flex gap-2 pt-2">
+              <button
+                onClick={() => {
+                  this.setState({ hasError: false, error: null });
+                  window.location.href = "/";
+                }}
+                className="flex-1 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl transition-all"
+              >
+                Go to Home
+              </button>
+              <button
+                onClick={() => {
+                  try {
+                    localStorage.removeItem("joy_hub_token");
+                    localStorage.removeItem("joy_hub_user");
+                  } catch {}
+                  window.location.reload();
+                }}
+                className="flex-1 py-2.5 bg-blue-900 hover:bg-blue-800 text-white font-bold text-xs rounded-xl shadow transition-all"
+              >
+                Reset Session
+              </button>
+            </div>
           </div>
         </div>
       );

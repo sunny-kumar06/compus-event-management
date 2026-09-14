@@ -43,10 +43,11 @@ export default function TeacherDashboard() {
     fetchAssignedEvents();
   }, []);
 
-  const totalAssigned = assignedEvents.length;
-  const totalParticipants = assignedEvents.reduce((acc, evt) => acc + (evt.currentRegistrationsCount || 0), 0);
-  const upcomingEvents = assignedEvents.filter((e) => new Date(e.eventDate) >= new Date()).length;
-  const completedEvents = assignedEvents.filter((e) => e.status === "completed").length;
+  const eventsList = Array.isArray(assignedEvents) ? assignedEvents : [];
+  const totalAssigned = eventsList.length;
+  const totalParticipants = eventsList.reduce((acc, evt) => acc + (evt.currentRegistrationsCount || 0), 0);
+  const upcomingEvents = eventsList.filter((e) => new Date(e.eventDate) >= new Date()).length;
+  const completedEvents = eventsList.filter((e) => e.status === "completed").length;
 
   return (
     <div className="space-y-8">
@@ -120,7 +121,7 @@ export default function TeacherDashboard() {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {assignedEvents.map((evt) => (
+            {eventsList.map((evt) => (
               <div
                 key={evt._id}
                 className="p-5 bg-slate-50/70 rounded-2xl border border-slate-200 flex flex-col justify-between space-y-4 hover:shadow-md transition-all"

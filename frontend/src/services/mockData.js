@@ -1,6 +1,7 @@
 /**
- * Mock data fallback for static cloud deployments (e.g. Vercel)
- * when a live Node.js / MongoDB backend server is not yet attached.
+ * Comprehensive Mock Data Fallback for JOY Campus Event Hub
+ * Supports instant, fully-functional evaluation on static hosts (e.g. Vercel)
+ * when a live backend database is not attached.
  */
 
 export const mockUsers = {
@@ -18,7 +19,9 @@ export const mockUsers = {
     email: "sharma@joy.edu",
     role: "teacher",
     phone: "+91 98765 11101",
-    avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&fit=crop&q=80"
+    avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&fit=crop&q=80",
+    employeeId: "JOY-FAC-101",
+    department: "Computer Science & Engineering"
   },
   "verma@joy.edu": {
     _id: "6aa6ef8b596fd94c23ad52a8",
@@ -26,7 +29,9 @@ export const mockUsers = {
     email: "verma@joy.edu",
     role: "teacher",
     phone: "+91 98765 11102",
-    avatar: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=200&fit=crop&q=80"
+    avatar: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=200&fit=crop&q=80",
+    employeeId: "JOY-FAC-102",
+    department: "Electronics & Communication Engineering"
   },
   "sunny@joy.edu": {
     _id: "6aa6ef8b596fd94c23ad52ac",
@@ -135,7 +140,9 @@ export const mockEvents = [
     eligibility: "Pre-requisite: Basic Python programming experience",
     rules: ["Bring a laptop with Python 3.10+ installed."],
     facultyCoordinators: [mockUsers["sharma@joy.edu"]],
-    status: "registration_open"
+    studentCoordinators: [mockUsers["sunny@joy.edu"]],
+    status: "registration_open",
+    dynamicFormSchema: []
   },
   {
     _id: "6aa6ef8d596fd94c23ad52c9",
@@ -154,12 +161,15 @@ export const mockEvents = [
     eligibility: "Open to all students",
     rules: ["Teams of 2.", "No mobile phones during live rounds."],
     facultyCoordinators: [mockUsers["sharma@joy.edu"]],
-    status: "completed"
+    studentCoordinators: [mockUsers["aman@joy.edu"]],
+    status: "completed",
+    dynamicFormSchema: []
   }
 ];
 
 export const mockCertificates = [
   {
+    _id: "demo_cert_1",
     certificateId: "JOY-CERT-2026-000101",
     student: mockUsers["sunny@joy.edu"],
     event: mockEvents[3],
@@ -181,11 +191,129 @@ export const mockCertificates = [
   }
 ];
 
+export const mockRegistrations = [
+  {
+    _id: "demo_reg_1",
+    registrationId: "JOY-EVT-2026-000101",
+    event: mockEvents[0],
+    student: mockUsers["sunny@joy.edu"],
+    status: "confirmed",
+    registeredAt: new Date(Date.now() - 2 * 86400000).toISOString(),
+    attendanceStatus: "not_marked",
+    customFormData: { team_name: "CodeBreakers", tech_stack: "AI & Machine Learning" }
+  },
+  {
+    _id: "demo_reg_2",
+    registrationId: "JOY-EVT-2026-000102",
+    event: mockEvents[3],
+    student: mockUsers["sunny@joy.edu"],
+    status: "confirmed",
+    registeredAt: new Date(Date.now() - 6 * 86400000).toISOString(),
+    attendanceStatus: "present",
+    customFormData: {}
+  }
+];
+
+export const mockAttendance = [
+  {
+    _id: "demo_att_1",
+    event: mockEvents[3],
+    student: mockUsers["sunny@joy.edu"],
+    timestamp: new Date(Date.now() - 5 * 86400000).toISOString(),
+    status: "present",
+    markedMethod: "qr_scan"
+  }
+];
+
+export const mockNotifications = [
+  {
+    _id: "demo_notif_1",
+    title: "Welcome to JOY Campus Hub!",
+    message: "Your smart campus event portal is now active. Explore upcoming hackathons and festivals.",
+    type: "system",
+    isRead: false,
+    createdAt: new Date().toISOString()
+  },
+  {
+    _id: "demo_notif_2",
+    title: "Certificate Issued: 1st Position",
+    message: "Congratulations! Your verifiable digital certificate for JOY Annual Quiz Odyssey is ready.",
+    type: "certificate",
+    isRead: true,
+    createdAt: new Date(Date.now() - 5 * 86400000).toISOString()
+  }
+];
+
+export const mockAdminStats = {
+  summary: {
+    totalStudents: 1420,
+    totalTeachers: 48,
+    totalEvents: 12,
+    totalRegistrations: 384,
+    totalCertificates: 210,
+    attendanceStats: {
+      present: 360,
+      rate: 94
+    },
+    ongoingEvents: 1,
+    upcomingEvents: 5,
+    completedEvents: 6
+  },
+  charts: {
+    branchStats: [
+      { _id: "Computer Science & Engineering", count: 160 },
+      { _id: "Electronics & Communication", count: 95 },
+      { _id: "Information Technology", count: 82 },
+      { _id: "Mechanical Engineering", count: 68 },
+      { _id: "Management Studies", count: 45 }
+    ],
+    categoryStats: [
+      { _id: "technical", count: 4, totalRegistrations: 140 },
+      { _id: "cultural", count: 3, totalRegistrations: 110 },
+      { _id: "sports", count: 2, totalRegistrations: 65 },
+      { _id: "workshops", count: 2, totalRegistrations: 50 },
+      { _id: "competitions", count: 1, totalRegistrations: 19 }
+    ]
+  },
+  recentActivity: {
+    registrations: [
+      {
+        _id: "demo_act_reg_1",
+        student: mockUsers["sunny@joy.edu"],
+        event: mockEvents[0],
+        registeredAt: new Date().toISOString()
+      },
+      {
+        _id: "demo_act_reg_2",
+        student: mockUsers["aman@joy.edu"],
+        event: mockEvents[1],
+        registeredAt: new Date(Date.now() - 3600000).toISOString()
+      },
+      {
+        _id: "demo_act_reg_3",
+        student: mockUsers["sneha@joy.edu"],
+        event: mockEvents[2],
+        registeredAt: new Date(Date.now() - 7200000).toISOString()
+      }
+    ],
+    certificates: [
+      {
+        _id: "demo_act_cert_1",
+        certificateId: "JOY-CERT-2026-000101",
+        student: mockUsers["sunny@joy.edu"],
+        event: mockEvents[3],
+        position: "1st",
+        issueDate: new Date(Date.now() - 5 * 86400000).toISOString()
+      }
+    ]
+  }
+};
+
 export const mockStats = {
-  totalEvents: 6,
-  totalRegistrations: 28,
-  totalCertificates: 14,
-  activeStudents: 12,
-  activeTeachers: 3,
+  totalEvents: 12,
+  totalRegistrations: 384,
+  totalCertificates: 210,
+  activeStudents: 1420,
+  activeTeachers: 48,
   attendanceRate: "94%"
 };
